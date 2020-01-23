@@ -4,6 +4,7 @@ from xml.dom.minidom import Document
 from flask import Flask, send_file, make_response, g
 import Const
 from opdscore import FeedDoc, Link, OpdsProtocol, Entry
+import os
 
 import Config
 
@@ -81,5 +82,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         )
-    app.debug = False
-    app.run(host='0.0.0.0', port=10086)
+    # app.debug = False
+    # app.run(host='0.0.0.0', port=10086)
+    app.run("0.0.0.0", port=int(os.environ.get('PORT', '5000')), debug=False)
