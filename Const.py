@@ -8,6 +8,7 @@ icon = "icon"
 author = "author"
 link = "link"
 description = "description"
+search = 'search'
 
 #####################
 

@@ -9,6 +9,10 @@ import json
 
 from utils import connect_path, getFile
 
+from qcloud_cos import CosConfig
+from qcloud_cos import CosS3Client
+
+
 __author__ = 'lei'
 __author2__ = 'Lance'
 
@@ -163,5 +167,85 @@ class QiniuFileSystem(FileSystem):
         return [connect_path(Config.SITE_BOOK_DONWLOAD, connect_path(path, ee)) for ee in files]
 
 
+class TencentFileSystem(FileSystem):
+
+    def __init__(self):
+        secret_id = 'AKIDcq7HVrj0nlAWUYvPoslyMKKI2GNJ478z'
+        secret_key = '70xZrtGAwmf6WdXGhcch3gRt7hV4SJGx'
+        region = 'ap-guangzhou'
+        config = CosConfig(Region=region, SecretId=secret_id, SecretKey=secret_key)
+        # 2. 获取客户端对象
+        self.client = CosS3Client(config)
+        self.bucket = 'light-novel-1254016670'
+        self.booklist = []
+
+    def outErr(self):
+        logging.error("Tencent File System Error...")
+
+    def exists(self, path):
+        # resp = self.client.list_objects(Bucket=self.bucket,
+        #                                 Prefix=path,
+        #                                 MaxKeys=1)
+        # data = dict(resp)
+        # if 'Contents' not in data:
+        #     return False
+        return True
+
+    def isfile(self, path):
+        if path == '/':
+            return False
+        # resp = self.client.list_objects(Bucket=self.bucket,
+        #                                 Prefix=path,
+        #                                 MaxKeys=1)
+        # data = dict(resp)
+        # if 'Contents' not in data:
+        #     return False
+        return True
+
+    def listdir(self, path, page=4):
+        if path is None or len(path) == 0:
+            path = ''
+        elif path[0] == '/':
+            path = path[1:]
+        last_marker = ''
+        # page = 1.2.3.4...
+        data = None
+        self.booklist = []
+        while page > 0:
+            resp = self.client.list_objects(Bucket=self.bucket,
+                                            Prefix=path,
+                                            MaxKeys=1000,
+                                            Marker=last_marker,
+                                            )
+            data = dict(resp)
+            # print(data)
+            # 最后一页
+            if 'NextMarker' not in data:
+                break
+            last_marker = data['NextMarker']
+            page -= 1
+
+            if 'Contents' not in data:
+                return self.booklist
+            for book in data['Contents']:
+                key, last_modified, e_tag, size = book['Key'], book['LastModified'], book['ETag'], book['Size']
+                self.booklist.append(key)
+
+        if data is None:
+            return []
+        return self.booklist
+
+    def getTruePaths(self, tmp):
+        return ''
+
+    def getdownloadurl(self, path, name):
+        urls = []
+        # for book in self.booklist:
+        #     urls.append(Config.SITE_BOOK_DONWLOAD + book)
+        urls.append(Config.SITE_BOOK_DONWLOAD + path + '/' + name)
+        return urls
+
+
 if __name__ == '__main__':
-    pass
+    _fs = TencentFileSystem()
+    print(_fs.listdir('/'))

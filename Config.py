@@ -12,17 +12,22 @@ SITE_TITLE = "Opds CockyBook"
 SITE_EMAIL = "yinlei212@gmail.com"
 SITE_BOOK_LIST = SITE_URL + "/list"
 
-# download URL is SITE_BOOK_DONWLOAD/$path/$filename.$postfix
-# SITE_BOOK_DONWLOAD = 'http://7sbqcs.com1.z0.glb.clouddn.com'
-SITE_BOOK_DONWLOAD = 'http://192.168.43.203:10086/static/Books'
-
 # for local filesyste
 base = "/home/lance/Books"
 
 # Used In opdscore.py
-filesyste_type = 'LocalFileSystem'
+# filesyste_type = 'LocalFileSystem'
 # filesyste_type = 'QiniuFileSystem'
+filesyste_type = 'TencentFileSystem'
 # filesyste_type = 'LocalMetadataFileSystem'
+
+# download URL is SITE_BOOK_DONWLOAD/$path/$filename.$postfix
+# SITE_BOOK_DONWLOAD = 'http://7sbqcs.com1.z0.glb.clouddn.com'
+if filesyste_type == 'TencentFileSystem':
+    SITE_BOOK_DONWLOAD = 'https://light-novel-1254016670.cos.ap-guangzhou.myqcloud.com'
+else:
+    SITE_BOOK_DONWLOAD = 'http://192.168.43.203:10086/static/Books'
+
 
 description = u"""
      OPDS 标准核心功能是支持 EPUB 标准和基于 Atom XML 的目录格式.

@@ -6,7 +6,7 @@ import datetime
 from flask import g
 import Config
 import Const
-from filesystem import LocalFileSystem, QiniuFileSystem, LocalMetadataFileSystem
+from filesystem import LocalFileSystem, QiniuFileSystem, LocalMetadataFileSystem, TencentFileSystem
 import utils
 
 __author__ = 'lei'
@@ -14,6 +14,8 @@ if Config.filesyste_type == 'LocalFileSystem':
     fs = LocalFileSystem()
 elif Config.filesyste_type == 'LocalMetadataFileSystem':
     fs = LocalMetadataFileSystem()
+elif Config.filesyste_type == 'TencentFileSystem':
+    fs = TencentFileSystem()
 else:
     fs = QiniuFileSystem()
 
@@ -158,8 +160,12 @@ class FeedDoc:
         self.addNode(self.feed, Const.title, Config.SITE_TITLE)
         self.addNode(self.feed, Const.updated, utils.getNow())
         self.addNode(self.feed, Const.description, Config.description)
+        # def createLink(self, entry, href, rel, title, type):
         self.createLink(self.feed, Config.SITE_URL, "Home", "Home",
                         "application/atom+xml; profile=opds-catalog; kind=navigation")
+        # self.createLink(self.feed, 'search.xml', Const.search, "Search",
+        #                 "application/opensearchdescription+xml")
+
 
         self.doc.appendChild(self.feed)
         pass
@@ -241,11 +247,11 @@ class OpdsProtocol:
 
         # not exist!
 
-        if (path != '/' and not fs.exists(path)):
+        if path != '/' and not fs.exists(path):
             logging.info("dest Path [%s] is Not Exist." % path)
             return rslist
 
-        if (fs.isfile(path)):
+        if fs.isfile(path):
             logging.info("dest Path [%s] is a File Not Right." % path)
             g.book_process = "detail"
             rslist.append(create__single_entry(True, path, os.path.basename(path)))
