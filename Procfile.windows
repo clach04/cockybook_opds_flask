@@ -1,1 +1,1 @@
-web: python obsserver.py
+web: python opdsserver.py
