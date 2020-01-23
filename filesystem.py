@@ -2,13 +2,15 @@
 import logging
 
 import os
-import urllib2
+# import urllib2
+import requests
 import Config
 import json
 
 from utils import connect_path, getFile
 
 __author__ = 'lei'
+
 
 # base="/home/cocky"
 class FileSystem:
@@ -37,79 +39,92 @@ class LocalFileSystem(FileSystem):
     """
     config the #Config.base
     """
+
     def exists(self, path):
+        if path is None:
+            return False
         return os.path.exists(connect_path(Config.base, path))
 
     def isfile(self, path):
+        print(connect_path(Config.base, path))
+        if path is None:
+            return False
         return os.path.isfile(connect_path(Config.base, path))
 
     def listdir(self, path):
+        print(os.listdir(connect_path(Config.base, path)))
+        if path is None:
+            return False
         return os.listdir(connect_path(Config.base, path))
 
     def getdownloadurl(self, path, name):
         return connect_path(connect_path(Config.SITE_BOOK_DONWLOAD, path), name)
 
-class LocalMetadataFileSystem(FileSystem):
-    #q = Auth(Config.access_key, Config.secret_key)
 
-    #bucket = BucketManager(q)
+class LocalMetadataFileSystem(FileSystem):
+    # q = Auth(Config.access_key, Config.secret_key)
+
+    # bucket = BucketManager(q)
     def __init__(self):
-        ff=open('metadata.json','r')
+        ff = open('metadata.json', 'r')
 
         self.book_trees = json.load(ff)
 
     def exists(self, path):
-        files=getFile(self.book_trees,self.getTruePaths(path))
+        files = getFile(self.book_trees, self.getTruePaths(path))
         return files != None
 
     def isfile(self, path):
         if path is None:
             return False
+        # ???为啥放_-_
         if path.find('_-_') == -1:
             return False
         else:
             return True
 
     def listdir(self, path):
-        paths=self.getTruePaths(path)
+        paths = self.getTruePaths(path)
 
-        if len(paths)!=0:
+        if len(paths) != 0:
             return getFile(self.book_trees, paths)
         else:
             return self.book_trees
 
-    def getTruePaths(self,tmp):
+    def getTruePaths(self, tmp):
         """
         :param tmp:
         :return:
         """
-        paths=tmp.split('/')
-        paths=[p for p in paths if p!='']
+        paths = tmp.split('/')
+        paths = [p for p in paths if p != '']
         return paths
 
     def getdownloadurl(self, path, name):
-        tmp = connect_path(path,name)
+        tmp = connect_path(path, name)
 
-        files=getFile(self.book_trees, self.getTruePaths(tmp))
+        files = getFile(self.book_trees, self.getTruePaths(tmp))
 
-        return [connect_path(Config.SITE_BOOK_DONWLOAD,connect_path(path, ee)) for ee in files]
+        return [connect_path(Config.SITE_BOOK_DONWLOAD, connect_path(path, ee)) for ee in files]
+
 
 class QiniuFileSystem(FileSystem):
-    #q = Auth(Config.access_key, Config.secret_key)
+    # q = Auth(Config.access_key, Config.secret_key)
 
-    #bucket = BucketManager(q)
+    # bucket = BucketManager(q)
     def __init__(self):
-        resp=urllib2.urlopen(connect_path(Config.SITE_BOOK_DONWLOAD,'metadata.json'))
-        if resp.getcode() ==200:
-            self.book_trees = json.loads(resp.read())
+        # resp=urllib2.urlopen(connect_path(Config.SITE_BOOK_DONWLOAD,'metadata.json'))
+        resp = requests.get(connect_path(Config.SITE_BOOK_DONWLOAD, 'metadata.json'))
+        if resp.status_code == 200:
+            self.book_trees = json.loads(resp.text)
 
     def outErr(self):
         logging.error("No Realyzed")
 
     def exists(self, path):
-        files=getFile(self.book_trees,self.getTruePaths(path))
-        #logging.info(len(files)!=0)
-        return len(files)!=0
+        files = getFile(self.book_trees, self.getTruePaths(path))
+        # logging.info(len(files)!=0)
+        return len(files) != 0
 
     def isfile(self, path):
         if path.find('_-_') == -1:
@@ -118,28 +133,29 @@ class QiniuFileSystem(FileSystem):
             return True
 
     def listdir(self, path):
-        paths=self.getTruePaths(path)
+        paths = self.getTruePaths(path)
 
-        if len(paths)!=0:
+        if len(paths) != 0:
             return getFile(self.book_trees, paths)
         else:
             return self.book_trees
 
-    def getTruePaths(self,tmp):
+    def getTruePaths(self, tmp):
         """
         :param tmp:
         :return:
         """
-        paths=tmp.split('/')
-        paths=[p for p in paths if p!='']
+        paths = tmp.split('/')
+        paths = [p for p in paths if p != '']
         return paths
 
     def getdownloadurl(self, path, name):
-        tmp = connect_path(path,name)
+        tmp = connect_path(path, name)
 
-        files=getFile(self.book_trees,self.getTruePaths(tmp))
+        files = getFile(self.book_trees, self.getTruePaths(tmp))
 
-        return [connect_path(Config.SITE_BOOK_DONWLOAD,connect_path(path, ee)) for ee in files]
+        return [connect_path(Config.SITE_BOOK_DONWLOAD, connect_path(path, ee)) for ee in files]
 
-if __name__ =='__main__':
+
+if __name__ == '__main__':
     pass

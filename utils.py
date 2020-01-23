@@ -2,15 +2,19 @@ import datetime
 import json
 import logging
 
-
 __author__ = 'lei'
+
 
 # #connect path
 def connect_path(base, name):
-    if name.startswith('/'):
+    if base is None or name is None:
+        print(base, name)
+        return None
+    # if name.startswith('/'):
+    if name[0] == '/':
         name = name[1:]
 
-    if base.endswith('/'):
+    if base[-1] == '/':
         return base + name
     else:
         return base + '/' + name
@@ -20,7 +24,7 @@ def getNow():
     return datetime.datetime.now().strftime("%Y-%m-%dT%I:%M:%SZ")
 
 
-def getFile(jjson,paths):
+def getFile(jjson, paths):
     '''
     get json object
     :param jjson:   json object
@@ -28,20 +32,19 @@ def getFile(jjson,paths):
     :return:        json object
     '''
     try:
-        if len(paths)==1:
-            if paths[0]=='':
+        if len(paths) == 1:
+            if paths[0] == '':
                 return jjson
-            elif jjson.has_key(paths[0]):
+            # elif jjson.has_key(paths[0]):
+            elif paths[0] in jjson:
 
                 return jjson[paths[0]]
             else:
-                logging.warn( 'Jjson',json.dumps(jjson))
-                logging.warn( 'No this Key:', paths[0])
+                logging.warn('Jjson', json.dumps(jjson))
+                logging.warn('No this Key:', paths[0])
                 return None
-        elif len(paths)>1:
+        elif len(paths) > 1:
             return getFile(jjson[paths[0]], paths[1:])
-    except AttributeError ,e:
-        logging.error(e.message)
+    except AttributeError as e:
+        logging.error(e)
         return None
-
-

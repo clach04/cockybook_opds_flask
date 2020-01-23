@@ -36,5 +36,3 @@ book_link_rel_subsection = "subsection"
 book_link_rel_image = "http://opds-spec.org/image"
 book_link_rel__image_thumbnail = "http://opds-spec.org/image/thumbnail"
 book_link_rel__acquisition = "http://opds-spec.org/acquisition"
-
-

@@ -15,13 +15,15 @@ __author__ = 'lei'
 
 app = Flask(__name__)
 
+
 @app.route("/static/<path:stcpath>")
 def css(stcpath):
     return app.send_static_file(stcpath)
 
+
 @app.route("/")
 def root():
-    d=Document()
+    d = Document()
     f = FeedDoc(d)
     entry = Entry()
     entry.id = Config.SITE_BOOK_LIST
@@ -36,6 +38,7 @@ def root():
     resp.headers['Content-Type'] = 'application/xml; profile=opds-catalog; kind=navigation'
 
     return resp
+
 
 @app.route('/list/')
 @app.route('/list/<path:path>/')
@@ -52,6 +55,7 @@ def listbooks(path="/"):
     resp.headers['Content-Type'] = 'text/xml; profile=opds-catalog; kind=navigation'
     return resp
 
+
 @app.route('/download/<path:path>')
 def download(path):
     """
@@ -59,6 +63,7 @@ def download(path):
     """
     filePath = getOpdsProtocol().dowloadBook(path)
     return send_file(filePath)
+
 
 @app.route('/show/<path:path>')
 def showhtml(path):
@@ -70,10 +75,8 @@ def getOpdsProtocol():
 
 
 if __name__ == "__main__":
-
     logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                )
-    app.debug = True
-    app.run(host='0.0.0.0')
-
+                        format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                        )
+    app.debug = False
+    app.run(host='0.0.0.0', port=10086)

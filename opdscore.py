@@ -9,11 +9,10 @@ import Const
 from filesystem import LocalFileSystem, QiniuFileSystem, LocalMetadataFileSystem
 import utils
 
-
 __author__ = 'lei'
 if Config.filesyste_type == 'LocalFileSystem':
     fs = LocalFileSystem()
-elif Config.filesyste_type =='LocalMetadataFileSystem':
+elif Config.filesyste_type == 'LocalMetadataFileSystem':
     fs = LocalMetadataFileSystem()
 else:
     fs = QiniuFileSystem()
@@ -24,13 +23,14 @@ def setfeedNS(feed):
     feed.setAttribute("xmlns:opds", "http://opds-spec.org/2010/catalog")
     feed.setAttribute("xmlns:opds", Config.SITE_URL)
     feed.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-    #feed.setAttribute("xmlns", "http://www.w3.org/2005/Atom")
+    # feed.setAttribute("xmlns", "http://www.w3.org/2005/Atom")
     feed.setAttribute("xmlns:dcterms", "http://purl.org/dc/terms/")
     feed.setAttribute("xmlns:thr", "http://purl.org/syndication/thread/1.0")
     feed.setAttribute("xmlns:opensearch", "http://a9.com/-/spec/opensearch/1.1/")
 
+
 def getCreateDate(file_path):
-    #return datetime.datetime.now(os.path.getctime(file_path)).strftime("%Y-%m-%dT%I:%M:%SZ")
+    # return datetime.datetime.now(os.path.getctime(file_path)).strftime("%Y-%m-%dT%I:%M:%SZ")
     return datetime.datetime.now().strftime("%Y-%m-%dT%I:%M:%SZ")
 
 
@@ -44,22 +44,23 @@ def create_entry(isFile, path, name):
     '''
     entry = Entry()
     if not isFile:
-        entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_LIST,path),name)
-        entry.links=[]
+        entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_LIST, path), name)
+        entry.links = []
         entry.links.append(Link(entry.id, _get_book_entry_rel(name), name, _get_book_entry_type(name)))
     else:
         entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_LIST, path), name)
-        #TODO add Another Links
-        links=fs.getdownloadurl(path, name)
-        #name=os.path.basename(path)
-        entry.links=[]
-        if links !=None:
+        # TODO add Another Links
+        links = fs.getdownloadurl(path, name)
+        # name=os.path.basename(path)
+        entry.links = []
+        if links != None:
             for link in links:
                 entry.links.append(Link(link, _get_book_entry_rel(link), name, _get_book_entry_type(link)))
     entry.content = name
     entry.title = name
     entry.updated = utils.getNow()
     return entry
+
 
 def create__single_entry(isFile, path, name):
     '''
@@ -71,21 +72,22 @@ def create__single_entry(isFile, path, name):
     '''
     entry = Entry()
     if not isFile:
-        entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_LIST,path),name)
-        entry.links=[]
+        entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_LIST, path), name)
+        entry.links = []
         entry.links.append(Link(entry.id, _get_book_entry_rel(name), name, _get_book_entry_type(name)))
     else:
         entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_LIST, path), name)
-        #TODO add Another Links
-        links=fs.getdownloadurl(os.path.dirname(path), name)
-        entry.links=[]
-        if links !=None:
+        # TODO add Another Links
+        links = fs.getdownloadurl(os.path.dirname(path), name)
+        entry.links = []
+        if links != None:
             for link in links:
                 entry.links.append(Link(link, _get_book_entry_rel(link), name, _get_book_entry_type(link)))
     entry.content = name
     entry.title = name
     entry.updated = utils.getNow()
     return entry
+
 
 def _get_book_entry_type(name):
     """
@@ -107,6 +109,7 @@ def _get_book_entry_type(name):
         # No subifx
         return Const.book_type_entry_catalog
 
+
 def _get_book_entry_rel(name):
     """
     get link type
@@ -127,8 +130,9 @@ def _get_book_entry_rel(name):
         # No subifx
         return Const.book_link_rel_subsection
 
+
 class FeedDoc:
-    def __init__(self, doc , path=None):
+    def __init__(self, doc, path=None):
         """
         Root Element
         :param doc:  Document()
@@ -137,9 +141,11 @@ class FeedDoc:
         self.doc = doc
         # xml-stylesheet
         if fs.isfile(path):
-            self.doc.appendChild(self.doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"%s/static/bookdetail.xsl\""%Config.SITE_URL))
+            self.doc.appendChild(self.doc.createProcessingInstruction("xml-stylesheet",
+                                                                      "type=\"text/xsl\" href=\"%s/static/bookdetail.xsl\"" % Config.SITE_URL))
         else:
-            self.doc.appendChild(self.doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"%s/static/booklist.xsl\""%Config.SITE_URL))
+            self.doc.appendChild(self.doc.createProcessingInstruction("xml-stylesheet",
+                                                                      "type=\"text/xsl\" href=\"%s/static/booklist.xsl\"" % Config.SITE_URL))
         # feed
         self.feed = self.doc.createElement("feed")
         setfeedNS(self.feed)
@@ -153,8 +159,6 @@ class FeedDoc:
 
         self.doc.appendChild(self.feed)
         pass
-
-
 
     def addNode(self, element, key, value, link=None):
         """
@@ -198,6 +202,7 @@ class FeedDoc:
         entry.appendChild(link)
         return link
 
+
 class Entry:
     def __init__(self, title=None, updated=None, id=None, content=None, links=[]):
         self.links = links
@@ -205,6 +210,7 @@ class Entry:
         self.id = id
         self.updated = updated
         self.title = title
+
 
 class Link:
     """
@@ -229,9 +235,9 @@ class OpdsProtocol:
         """
         rslist = []
 
-        #not exist!
+        # not exist!
 
-        if (path!='/' and  not fs.exists(path)):
+        if (path != '/' and not fs.exists(path)):
             logging.info("dest Path [%s] is Not Exist." % path)
             return rslist
 
@@ -259,7 +265,6 @@ class OpdsProtocol:
 
         return rslist
 
-
     def dowloadBook(self, path):
         """
         file
@@ -268,7 +273,6 @@ class OpdsProtocol:
         """
 
         return utils.connect_path(Config.base, path)
-
 
     def showhtml(self):
         return ("No Realized")
