@@ -7,9 +7,10 @@ __author__ = 'lei'
 # SITE_URL = "http://10.10.113.237:5000"
 # SITE_URL = "http://opds.cockybook.com"
 # SITE_URL = 'http://127.0.0.1:10086'
-SITE_URL = 'http://192.168.43.203:10086'
-SITE_TITLE = "Opds CockyBook"
-SITE_EMAIL = "yinlei212@gmail.com"
+# SITE_URL = 'http://192.168.43.203:10086'
+SITE_URL = 'https://light-opds.herokuapp.com'
+SITE_TITLE = "Light Novels OPDS Site"
+SITE_EMAIL = "LanceLiang2018@163.com"
 SITE_BOOK_LIST = SITE_URL + "/list"
 
 # for local filesyste
@@ -33,4 +34,5 @@ description = u"""
      OPDS 标准核心功能是支持 EPUB 标准和基于 Atom XML 的目录格式.
 可以使用阅读器进行在线书库添加，比如FBReader、静读天下（Moon+ Reader）、Aldiko、Stanza等等.
 添加地址为:   http://opds.cockybook.com
+（轻小说书源提供&修改代码by LanceLiang2018@163.com）
 """
