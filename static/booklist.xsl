@@ -68,7 +68,9 @@
 
                     </div>
                     <div class="container header">
-                        <a href="javascript:history.go(-1);" ><strong>&lt;  返回</strong></a>
+                        <a href="javascript:history.go(-1);">
+                            <strong>&lt; 返回</strong>
+                        </a>
                     </div>
                     <div class="container">
                         <xsl:for-each select="/feed/entry">

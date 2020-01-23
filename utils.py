@@ -6,11 +6,14 @@ __author__ = 'lei'
 
 
 # #connect path
+# 不是你这啥用处
 def connect_path(base, name):
     if base is None or name is None:
-        print(base, name)
+        # print(base, name)
         return None
     # if name.startswith('/'):
+    if len(name) == 0:
+        return base
     if name[0] == '/':
         name = name[1:]
 

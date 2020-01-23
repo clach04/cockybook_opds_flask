@@ -36,23 +36,26 @@ def root():
     f.createEntry(entry)
     resp = make_response(f.toString())
     resp.headers['Content-Type'] = 'application/xml; profile=opds-catalog; kind=navigation'
+    # print(f.toString())
 
     return resp
 
 
-@app.route('/list/')
-@app.route('/list/<path:path>/')
+@app.route('/list')
+@app.route('/list/<string:path>')
 def listbooks(path="/"):
     feed = FeedDoc(Document(), path)
 
     # TODO add *** to feed.toString()
     l = getOpdsProtocol().listBooks(path)
+    # print(l)
 
     for entry in l:
         feed.createEntry(entry)
 
     resp = make_response(feed.toString())
     resp.headers['Content-Type'] = 'text/xml; profile=opds-catalog; kind=navigation'
+    # print(feed.toString().decode())
     return resp
 
 

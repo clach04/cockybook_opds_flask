@@ -5,16 +5,19 @@ __author__ = 'lei'
 # #############################
 # root for opds server website
 # SITE_URL = "http://10.10.113.237:5000"
-SITE_URL = "http://opds.cockybook.com"
+# SITE_URL = "http://opds.cockybook.com"
+# SITE_URL = 'http://127.0.0.1:10086'
+SITE_URL = 'http://192.168.43.203:10086'
 SITE_TITLE = "Opds CockyBook"
 SITE_EMAIL = "yinlei212@gmail.com"
 SITE_BOOK_LIST = SITE_URL + "/list"
 
 # download URL is SITE_BOOK_DONWLOAD/$path/$filename.$postfix
-SITE_BOOK_DONWLOAD = 'http://7sbqcs.com1.z0.glb.clouddn.com'
+# SITE_BOOK_DONWLOAD = 'http://7sbqcs.com1.z0.glb.clouddn.com'
+SITE_BOOK_DONWLOAD = 'http://192.168.43.203:10086/static/Books'
 
 # for local filesyste
-base = "~/Books"
+base = "/home/lance/Books"
 
 # Used In opdscore.py
 filesyste_type = 'LocalFileSystem'

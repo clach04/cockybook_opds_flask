@@ -10,6 +10,7 @@ import json
 from utils import connect_path, getFile
 
 __author__ = 'lei'
+__author2__ = 'Lance'
 
 
 # base="/home/cocky"
@@ -40,25 +41,30 @@ class LocalFileSystem(FileSystem):
     config the #Config.base
     """
 
+    def __init__(self):
+        self.path = ''
+
     def exists(self, path):
         if path is None:
-            return False
+            path = self.path
         return os.path.exists(connect_path(Config.base, path))
 
     def isfile(self, path):
-        print(connect_path(Config.base, path))
         if path is None:
-            return False
+            path = self.path
+        # print('isf', connect_path(Config.base, path))
         return os.path.isfile(connect_path(Config.base, path))
 
     def listdir(self, path):
-        print(os.listdir(connect_path(Config.base, path)))
         if path is None:
-            return False
+            path = self.path
+        # print('listdir', os.listdir(connect_path(Config.base, path)))
         return os.listdir(connect_path(Config.base, path))
 
     def getdownloadurl(self, path, name):
-        return connect_path(connect_path(Config.SITE_BOOK_DONWLOAD, path), name)
+        # print('down url:', connect_path(connect_path(Config.SITE_BOOK_DONWLOAD, path), name))
+        # 这里有问题。已经修改
+        return [connect_path(connect_path(Config.SITE_BOOK_DONWLOAD, path), name), ]
 
 
 class LocalMetadataFileSystem(FileSystem):

@@ -142,10 +142,14 @@ class FeedDoc:
         # xml-stylesheet
         if fs.isfile(path):
             self.doc.appendChild(self.doc.createProcessingInstruction("xml-stylesheet",
-                                                                      "type=\"text/xsl\" href=\"%s/static/bookdetail.xsl\"" % Config.SITE_URL))
+                                                                      "type=\"text/xsl\" "
+                                                                      "href=\"%s/static/bookdetail.xsl\"" %
+                                                                      Config.SITE_URL))
         else:
             self.doc.appendChild(self.doc.createProcessingInstruction("xml-stylesheet",
-                                                                      "type=\"text/xsl\" href=\"%s/static/booklist.xsl\"" % Config.SITE_URL))
+                                                                      "type=\"text/xsl\" "
+                                                                      "href=\"%s/static/booklist.xsl\"" %
+                                                                      Config.SITE_URL))
         # feed
         self.feed = self.doc.createElement("feed")
         setfeedNS(self.feed)
