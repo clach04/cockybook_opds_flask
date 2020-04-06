@@ -8,6 +8,7 @@ import Config
 import json
 
 from utils import connect_path, getFile
+bookdata = {}
 
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
@@ -178,6 +179,7 @@ class TencentFileSystem(FileSystem):
         self.client = CosS3Client(config)
         self.bucket = 'light-novel-1254016670'
         self.booklist = []
+        self.bookdata = []
 
     def outErr(self):
         logging.error("Tencent File System Error...")
@@ -211,6 +213,8 @@ class TencentFileSystem(FileSystem):
         # page = 1.2.3.4...
         data = None
         self.booklist = []
+        self.bookdata = []
+
         while page > 0:
             resp = self.client.list_objects(Bucket=self.bucket,
                                             Prefix=path,
@@ -230,9 +234,19 @@ class TencentFileSystem(FileSystem):
             for book in data['Contents']:
                 key, last_modified, e_tag, size = book['Key'], book['LastModified'], book['ETag'], book['Size']
                 self.booklist.append(key)
+                self.bookdata.append({
+                    'key': key,
+                    'last_modified': last_modified,
+                    'e_tag': e_tag,
+                    'size': size
+                })
 
         if data is None:
             return []
+        global bookdata
+        bookdata = {}
+        for d in self.bookdata:
+            bookdata[d['key']] = d
         return self.booklist
 
     def getTruePaths(self, tmp):

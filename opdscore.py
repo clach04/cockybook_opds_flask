@@ -60,7 +60,7 @@ def create_entry(isFile, path, name):
                 entry.links.append(Link(link, _get_book_entry_rel(link), name, _get_book_entry_type(link)))
     entry.content = name
     entry.title = name
-    entry.updated = utils.getNow()
+    entry.updated = utils.getUpdateTime(name)
     return entry
 
 

@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import filesystem
 
 __author__ = 'lei'
 
@@ -25,6 +26,15 @@ def connect_path(base, name):
 
 def getNow():
     return datetime.datetime.now().strftime("%Y-%m-%dT%I:%M:%SZ")
+
+
+def getUpdateTime(name, default=None):
+    if default is None:
+        default = getNow()
+    result = filesystem.bookdata.get(name, default)
+    if type(result) is dict:
+        result = result['last_modified']
+    return result
 
 
 def getFile(jjson, paths):
