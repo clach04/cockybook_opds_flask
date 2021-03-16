@@ -75,7 +75,7 @@ def create__single_entry(isFile, path, name):
         entry.links=[]
         entry.links.append(Link(entry.id, _get_book_entry_rel(name), name, _get_book_entry_type(name)))
     else:
-        entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_LIST, path), name)
+        entry.id = utils.connect_path(utils.connect_path(Config.SITE_BOOK_DONWLOAD, path), name)
         #TODO add Another Links
         links=fs.getdownloadurl(os.path.dirname(path), name)
         entry.links=[]
@@ -135,6 +135,7 @@ class FeedDoc:
         :return:
         """
         self.doc = doc
+        path = path or Config.base  # clach04 needed for filesystem
         # xml-stylesheet
         if fs.isfile(path):
             self.doc.appendChild(self.doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"%s/static/bookdetail.xsl\""%Config.SITE_URL))
@@ -230,6 +231,11 @@ class OpdsProtocol:
         rslist = []
 
         #not exist!
+        # FIXME use filesystem isfile
+        print('clach04_debug listBooks path %r' % path)
+        print('clach04_debug listBooks fs %r' % fs)
+        print('clach04_debug listBooks fs %r' % type(fs))
+
 
         if (path!='/' and  not fs.exists(path)):
             logging.info("dest Path [%s] is Not Exist." % path)
@@ -243,7 +249,9 @@ class OpdsProtocol:
 
         bookmap = {}
 
+        print('clach04_debug listBooks path %r' % path)
         for name in fs.listdir(path):
+            print('clach04_debug listBooks name %r' % name)
             try:
                 name = name.decode("utf-8")
             except Exception:
@@ -266,6 +274,8 @@ class OpdsProtocol:
         :param path:
         :return: file
         """
+        print('clach04_debug dowloadBook path %r' % path)
+
 
         return utils.connect_path(Config.base, path)
 

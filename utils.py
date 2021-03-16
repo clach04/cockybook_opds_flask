@@ -8,6 +8,7 @@ __author__ = 'lei'
 # #connect path
 def connect_path(base, name):
     if name.startswith('/'):
+        # FIXME needs to be in a loop and also need to handle ../ embedded - i.e. use normalize path
         name = name[1:]
 
     if base.endswith('/'):

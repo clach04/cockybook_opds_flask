@@ -22,9 +22,12 @@ def css(stcpath):
 @app.route("/")
 def root():
     d=Document()
+    print('clach04_debug d %r' % d)
+    print('clach04_debug type(d) %r' % type(d))
     f = FeedDoc(d)
     entry = Entry()
     entry.id = Config.SITE_BOOK_LIST
+    print('clach04_debug Config.SITE_URL %r' % Config.SITE_URL)
     entry.content = "all Books List By Type"
     entry.title = "Book List"
 
@@ -34,6 +37,7 @@ def root():
     f.createEntry(entry)
     resp = make_response(f.toString())
     resp.headers['Content-Type'] = 'application/xml; profile=opds-catalog; kind=navigation'
+    print('clach04_debug %r' % 'about to return /')
 
     return resp
 
@@ -50,6 +54,7 @@ def listbooks(path="/"):
 
     resp = make_response(feed.toString())
     resp.headers['Content-Type'] = 'text/xml; profile=opds-catalog; kind=navigation'
+    print('clach04_debug %r' % 'about to return /ist*')
     return resp
 
 @app.route('/download/<path:path>')
@@ -57,6 +62,7 @@ def download(path):
     """
     download book
     """
+    print('clach04_debug download path %r' % path)
     filePath = getOpdsProtocol().dowloadBook(path)
     return send_file(filePath)
 
@@ -70,6 +76,7 @@ def getOpdsProtocol():
 
 
 if __name__ == "__main__":
+    #Config.SITE_URL = 'http://localhost:5000/'
 
     logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
